@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url'
+
 import { bold, Events, userMention } from 'discord.js'
 
 import { discordClient } from '../services/discord/DiscordClient.js'
@@ -13,11 +15,18 @@ const guildMemberAdd: DiscordEvent<Events.GuildMemberAdd> = {
     await member.roles.add(DISCORD_WELCOME_ROLE_ID)
     const channel = discordClient.channels.cache.get(DISCORD_WELCOME_CHANNEL_ID)
     if (channel != null && channel.isTextBased()) {
-      await channel.send(
-        `Hey ${userMention(member.user.id)}, welcome to the official ${bold(
-          member.guild.name
-        )} Discord server!`
-      )
+      await channel.send({
+        content: `Hey ${userMention(
+          member.user.id
+        )}, welcome to the official ${bold(member.guild.name)} Discord server!`,
+        files: [
+          {
+            attachment: fileURLToPath(
+              new URL('../../public/SOTFBanner.jpg', import.meta.url)
+            )
+          }
+        ]
+      })
     }
   }
 }
