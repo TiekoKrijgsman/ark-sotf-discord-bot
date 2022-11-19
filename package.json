@@ -15,6 +15,7 @@
     "discord:register-commands": "node build/scripts/register-commands.js",
     "lint:commit": "commitlint",
     "lint:editorconfig": "editorconfig-checker",
+    "lint:markdown": "markdownlint-cli2",
     "lint:typescript": "eslint \"**/*.{js,jsx,ts,tsx}\" --ignore-path \".gitignore\"",
     "lint:prettier": "prettier \".\" --check --ignore-path \".gitignore\"",
     "lint:staged": "lint-staged",
