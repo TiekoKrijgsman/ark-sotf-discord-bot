@@ -1,8 +1,10 @@
 # ark-sotf-discord-bot
 
-Discord bot for [ARK: The Survival Of The Fittest](https://discord.gg/playSOTF).
+The Survival Of The Fittest Bot for [ARK: The Survival Of The Fittest](https://discord.gg/playSOTF) Discord server.
 
-[Discord Documentation](https://discord.com/developers/applications)
+[Discord Documentation](https://discord.com/developers/applications).
+
+[Discord.js Documentation](https://discord.js.org/) and [Discord.js Guide](https://discordjs.guide/).
 
 ## Prerequisites
 

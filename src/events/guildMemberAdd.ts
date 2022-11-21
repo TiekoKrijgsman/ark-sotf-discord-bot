@@ -23,7 +23,7 @@ const guildMemberAdd: DiscordEvent<Events.GuildMemberAdd> = {
 You are the ${bold(
         formatNumberOrdinals(member.guild.memberCount)
       )} member! :star_struck:
-Please read the rules ${channelMention(
+Please read the ${channelMention(
         DISCORD_RULES_CHANNEL_ID
       )} and enjoy your stay.`
       await channel.send({
