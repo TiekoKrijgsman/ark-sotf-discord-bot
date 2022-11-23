@@ -13,25 +13,19 @@ const steamSOTFCurrentPlayersCount: DiscordCommand = {
     )
     .toJSON(),
   execute: async (interaction) => {
-    try {
-      const { data } =
-        await steamAPI.get<SteamGetNumberOfCurrentPlayersResponse>(
-          '/ISteamUserStats/GetNumberOfCurrentPlayers/v1/',
-          {
-            params: {
-              appid: SOTF_APP_ID
-            }
-          }
-        )
-      await interaction.reply(
-        `Currently, the number of players on Steam on ARK: SOTF is ${bold(
-          data.response.player_count.toLocaleString(LOCALE)
-        )}.\nhttps://steamcharts.com/app/${SOTF_APP_ID}`
-      )
-    } catch (error) {
-      console.error(error)
-      await interaction.reply(`Something went wrong. Please try again later.`)
-    }
+    const { data } = await steamAPI.get<SteamGetNumberOfCurrentPlayersResponse>(
+      '/ISteamUserStats/GetNumberOfCurrentPlayers/v1/',
+      {
+        params: {
+          appid: SOTF_APP_ID
+        }
+      }
+    )
+    await interaction.reply(
+      `Currently, the number of players on Steam on ARK: SOTF is ${bold(
+        data.response.player_count.toLocaleString(LOCALE)
+      )}.\nhttps://steamcharts.com/app/${SOTF_APP_ID}`
+    )
   }
 }
 
