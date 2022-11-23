@@ -22,7 +22,7 @@ const steamSOTFCurrentPlayersCount: DiscordCommand = {
       }
     )
     await interaction.reply(
-      `Currently, the number of players on Steam on ARK: SOTF is ${bold(
+      `Currently, the number of players on Steam on ARK: Survival Of The Fittest is ${bold(
         data.response.player_count.toLocaleString(LOCALE)
       )}.\nhttps://steamcharts.com/app/${SOTF_APP_ID}`
     )

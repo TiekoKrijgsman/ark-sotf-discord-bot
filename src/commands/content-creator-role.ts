@@ -13,12 +13,13 @@ import { LOCALE } from '../utils/formatNumberOrdinals.js'
 
 const MINIMUM_CONTENT_CREATOR_ROLE = 500
 
-const medias = [
-  { name: 'YouTube', value: 'youtube' },
-  { name: 'Twitch', value: 'twitch' }
-] as const
+const DISCORD_CONNECTIONS_MORE_INFORMATION =
+  'See: <https://support.discord.com/hc/en-us/articles/8063233404823-Connections-Community-Members> for more information.'
 
-type MediaName = typeof medias[number]['name']
+const medias = [
+  { name: 'YouTube', value: 'youtube', fansType: 'subscribers' },
+  { name: 'Twitch', value: 'twitch', fansType: 'followers' }
+] as const
 
 const contentCreatorRole: DiscordCommand = {
   data: new SlashCommandBuilder()
@@ -72,33 +73,39 @@ const contentCreatorRole: DiscordCommand = {
       await interaction.reply(
         `${userMention(interaction.user.id)} You need to connect your ${
           mediaChoice.name
-        } account to your Discord account to use this command. See: <https://support.discord.com/hc/en-us/articles/8063233404823-Connections-Community-Members> for more information.`
+        } account to your Discord account to use this command.\n${DISCORD_CONNECTIONS_MORE_INFORMATION}`
       )
       return
     }
-    let mediaName: MediaName = 'YouTube'
+    if (!account.verified) {
+      await interaction.reply(
+        `${userMention(interaction.user.id)} You need to verify your ${
+          mediaChoice.name
+        } account on Discord to use this command.\n${DISCORD_CONNECTIONS_MORE_INFORMATION}`
+      )
+      return
+    }
     let mediaURL = ''
     let fansCount = 0
-    let fansType: 'subscribers' | 'followers' = 'subscribers'
     if (account.type === 'youtube') {
-      mediaName = 'YouTube'
       mediaURL = `https://www.youtube.com/channel/${account.id}`
       fansCount = await getYouTubeSubscriberCount(account)
-      fansType = 'subscribers'
     } else {
-      mediaName = 'Twitch'
       mediaURL = `https://www.twitch.tv/${account.name}`
       fansCount = await getTwitchFollowerCount(account)
-      fansType = 'followers'
     }
     const fansCountString = `You currently have ${bold(
-      `${fansCount.toLocaleString(LOCALE)} ${fansType} on ${mediaName}`
+      `${fansCount.toLocaleString(LOCALE)} ${mediaChoice.fansType} on ${
+        mediaChoice.name
+      }`
     )}`
     if (fansCount < MINIMUM_CONTENT_CREATOR_ROLE) {
       await interaction.reply(
         `${userMention(
           interaction.user.id
-        )} You need at least ${MINIMUM_CONTENT_CREATOR_ROLE} ${fansType} to use this command.\n${fansCountString}, you can make it. :muscle:\n${mediaURL}`
+        )} You need at least ${MINIMUM_CONTENT_CREATOR_ROLE} ${
+          mediaChoice.fansType
+        } to use this command.\n${fansCountString}, you can make it. :muscle:\n${mediaURL}`
       )
       return
     }
