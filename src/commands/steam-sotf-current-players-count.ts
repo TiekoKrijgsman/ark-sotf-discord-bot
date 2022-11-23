@@ -10,7 +10,8 @@ const steamSOTFCurrentPlayersCount: DiscordCommand = {
     .setName('steam-sotf-current-players-count')
     .setDescription(
       'Replies with the current number of players on Steam on ARK: SOTF.'
-    ),
+    )
+    .toJSON(),
   execute: async (interaction) => {
     try {
       const { data } =

@@ -27,7 +27,8 @@ const emergenceServerAdminCommand: DiscordCommand = {
     .setDMPermission(false)
     .setDefaultMemberPermissions(
       new PermissionsBitField('Administrator').valueOf()
-    ),
+    )
+    .toJSON(),
   execute: async (interaction) => {
     const command = interaction.options.getString('command')
     if (command == null) {

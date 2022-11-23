@@ -1,11 +1,11 @@
 import type {
   CacheType,
   ChatInputCommandInteraction,
-  SlashCommandBuilder
+  RESTPostAPIChatInputApplicationCommandsJSONBody
 } from 'discord.js'
 
 export interface DiscordCommand {
-  data: SlashCommandBuilder
+  data: RESTPostAPIChatInputApplicationCommandsJSONBody
   execute: (
     interaction: ChatInputCommandInteraction<CacheType>
   ) => Promise<void>

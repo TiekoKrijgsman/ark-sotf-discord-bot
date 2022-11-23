@@ -10,7 +10,8 @@ const emergenceServerStatus: DiscordCommand = {
     .setName('emergence-server-status')
     .setDescription(
       'Replies with the status of the EMERGENCE Beginners server!'
-    ),
+    )
+    .toJSON(),
   execute: async (interaction) => {
     try {
       const { gameserver } = (

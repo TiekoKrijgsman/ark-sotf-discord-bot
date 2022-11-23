@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 
+import axios from 'axios'
 import { Client, Collection, GatewayIntentBits, REST, Routes } from 'discord.js'
 
 import type { DiscordEvent } from './DiscordEvent.js'
@@ -7,12 +8,25 @@ import type { DiscordCommand } from './DiscordCommand.js'
 import {
   DISCORD_CLIENT_ID,
   DISCORD_GUILD_ID,
-  DISCORD_TOKEN
+  DISCORD_TOKEN,
+  DISCORD_TOKEN_USER
 } from '../../configuration.js'
 
-export const discordRest = new REST({ version: '10' }).setToken(DISCORD_TOKEN)
+const DISCORD_API_VERSION = '10'
 
-class DiscordClient extends Client {
+export const discordAPI = axios.create({
+  baseURL: `https://discord.com/api/v${DISCORD_API_VERSION}/`,
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: DISCORD_TOKEN_USER
+  }
+})
+
+export const discordRest = new REST({ version: DISCORD_API_VERSION }).setToken(
+  DISCORD_TOKEN
+)
+
+export class DiscordClient extends Client {
   private static instance: DiscordClient | null = null
 
   public static COMMANDS_URL = new URL('../../commands/', import.meta.url)
@@ -68,11 +82,23 @@ class DiscordClient extends Client {
       Routes.applicationGuildCommands(DISCORD_CLIENT_ID, DISCORD_GUILD_ID),
       {
         body: this.commands.map((command) => {
-          return command.data.toJSON()
+          return command.data
         })
       }
     )
   }
 }
 
-export const discordClient = await DiscordClient.getInstance()
+export interface ConnectedAccount {
+  type: 'github' | 'steam' | 'twitch' | 'twitter' | 'youtube'
+  id: string
+  name: string
+  verified: boolean
+}
+
+/**
+ * /users/{id}/profile
+ */
+export interface DiscordGetUserProfileResponse {
+  connected_accounts: ConnectedAccount[]
+}

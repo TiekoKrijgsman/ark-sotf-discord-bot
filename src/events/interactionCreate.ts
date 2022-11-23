@@ -1,6 +1,6 @@
 import { Events } from 'discord.js'
 
-import { discordClient } from '../services/discord/DiscordClient.js'
+import { DiscordClient } from '../services/discord/DiscordClient.js'
 import type { DiscordEvent } from '../services/discord/DiscordEvent.js'
 
 const interactionCreate: DiscordEvent<Events.InteractionCreate> = {
@@ -9,6 +9,7 @@ const interactionCreate: DiscordEvent<Events.InteractionCreate> = {
     if (!interaction.isChatInputCommand()) {
       return
     }
+    const discordClient = await DiscordClient.getInstance()
     const command = discordClient.commands.get(interaction.commandName)
     if (command == null) {
       console.error(`Command \`${interaction.commandName}\` not found.`)

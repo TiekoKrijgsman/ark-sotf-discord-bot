@@ -12,6 +12,9 @@ export const steamAPI = axios.create({
 
 export const SOTF_APP_ID = 407530
 
+/**
+ * /ISteamUserStats/GetNumberOfCurrentPlayers/v1/
+ */
 export interface SteamGetNumberOfCurrentPlayersResponse {
   response: {
     player_count: number

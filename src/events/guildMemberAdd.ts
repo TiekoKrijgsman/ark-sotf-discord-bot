@@ -2,7 +2,6 @@ import { fileURLToPath } from 'node:url'
 
 import { bold, channelMention, Events, userMention } from 'discord.js'
 
-import { discordClient } from '../services/discord/DiscordClient.js'
 import {
   DISCORD_RULES_CHANNEL_ID,
   DISCORD_WELCOME_CHANNEL_ID,
@@ -10,10 +9,12 @@ import {
 } from '../configuration.js'
 import type { DiscordEvent } from '../services/discord/DiscordEvent.js'
 import { formatNumberOrdinals } from '../utils/formatNumberOrdinals.js'
+import { DiscordClient } from '../services/discord/DiscordClient.js'
 
 const guildMemberAdd: DiscordEvent<Events.GuildMemberAdd> = {
   name: Events.GuildMemberAdd,
   execute: async (member) => {
+    const discordClient = await DiscordClient.getInstance()
     await member.roles.add(DISCORD_WELCOME_ROLE_ID)
     const channel = discordClient.channels.cache.get(DISCORD_WELCOME_CHANNEL_ID)
     if (channel != null && channel.isTextBased()) {
