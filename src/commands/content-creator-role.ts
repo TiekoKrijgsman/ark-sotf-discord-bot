@@ -20,24 +20,16 @@ const medias = [
 
 type MediaName = typeof medias[number]['name']
 
-const mediasString = medias
-  .map((media) => {
-    return media.name
-  })
-  .join('/')
-
 const contentCreatorRole: DiscordCommand = {
   data: new SlashCommandBuilder()
     .setName('content-creator-role')
     .setDescription(
-      `Adds the Content Creators role to the user who executed the command.`
+      `Adds the Content Creator role to the user who executed the command.`
     )
     .addStringOption((option) => {
       return option
         .setName('media')
-        .setDescription(
-          `The media you create content for. Must be one of ${mediasString}.`
-        )
+        .setDescription('The media you create content for.')
         .addChoices(...medias)
         .setRequired(true)
     })
@@ -51,7 +43,7 @@ const contentCreatorRole: DiscordCommand = {
     }
     if (interaction.member.roles.cache.has(DISCORD_CONTENT_CREATOR_ROLE_ID)) {
       await interaction.reply(
-        `You already have the Content Creators role. :star_struck:`
+        `You already have the Content Creator role. :star_struck:`
       )
       return
     }
@@ -59,22 +51,28 @@ const contentCreatorRole: DiscordCommand = {
       interaction.member.roles.cache.has(DISCORD_BLOCK_CONTENT_CREATOR_ROLE_ID)
     ) {
       await interaction.reply(
-        `You can't have the Content Creators role. Refer to a moderator for more information.`
+        `You can't have the Content Creator role. Refer to a moderator for more information.`
       )
       return
     }
     const media = interaction.options.get('media')
+    const mediaChoice = medias.find((mediasChoice) => {
+      return mediasChoice.value === media?.value
+    })
+    if (mediaChoice == null) {
+      throw new Error('Media invalid')
+    }
     const { data } = await discordAPI.get<DiscordGetUserProfileResponse>(
       `/users/${interaction.user.id}/profile`
     )
     const account = data.connected_accounts.find((connectedAccount) => {
-      return media?.value === connectedAccount.type
+      return mediaChoice.value === connectedAccount.type
     })
     if (account == null) {
       await interaction.reply(
-        `${userMention(
-          interaction.user.id
-        )} You need to connect your ${mediasString} account to your Discord account to use this command. See: <https://support.discord.com/hc/en-us/articles/8063233404823-Connections-Community-Members> for more information.`
+        `${userMention(interaction.user.id)} You need to connect your ${
+          mediaChoice.name
+        } account to your Discord account to use this command. See: <https://support.discord.com/hc/en-us/articles/8063233404823-Connections-Community-Members> for more information.`
       )
       return
     }
@@ -108,7 +106,7 @@ const contentCreatorRole: DiscordCommand = {
     await interaction.reply(
       `${userMention(
         interaction.user.id
-      )} You have been given the Content Creators role. :tada:\n${fansCountString}.\n${mediaURL}`
+      )} You have been given the Content Creator role. :tada:\n${fansCountString}.\n${mediaURL}`
     )
   }
 }

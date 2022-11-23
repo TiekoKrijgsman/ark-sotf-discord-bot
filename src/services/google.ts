@@ -1,9 +1,9 @@
-import { google } from 'googleapis'
+import { youtube as youtubeAPI } from '@googleapis/youtube'
 
 import { YOUTUBE_API_KEY } from '../configuration.js'
 import type { ConnectedAccount } from './discord/DiscordClient.js'
 
-export const youtube = google.youtube({
+export const youtube = youtubeAPI({
   version: 'v3',
   auth: YOUTUBE_API_KEY
 })
