@@ -2,7 +2,11 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
+export const DISCORD_BLOCK_CONTENT_CREATOR_ROLE_ID =
+  process.env.DISCORD_BLOCK_CONTENT_CREATOR_ROLE_ID ?? '101010101'
 export const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID ?? 'clientId'
+export const DISCORD_CONTENT_CREATOR_ROLE_ID =
+  process.env.DISCORD_CONTENT_CREATOR_ROLE_ID ?? '101010101'
 export const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID ?? '101010101'
 export const DISCORD_RULES_CHANNEL_ID =
   process.env.DISCORD_RULES_CHANNEL_ID ?? '101010101'
@@ -12,8 +16,6 @@ export const DISCORD_WELCOME_CHANNEL_ID =
   process.env.DISCORD_WELCOME_CHANNEL_ID ?? '101010101'
 export const DISCORD_WELCOME_ROLE_ID =
   process.env.DISCORD_WELCOME_ROLE_ID ?? '101010101'
-export const DISCORD_CONTENT_CREATOR_ROLE_ID =
-  process.env.DISCORD_CONTENT_CREATOR_ROLE_ID ?? '101010101'
 
 export const NITRADO_SERVER_ADMIN_PASSWORD =
   process.env.NITRADO_SERVER_ADMIN_PASSWORD ?? 'password'

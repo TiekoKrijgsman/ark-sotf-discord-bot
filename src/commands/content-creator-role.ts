@@ -1,18 +1,24 @@
-import { GuildMember, SlashCommandBuilder, userMention } from 'discord.js'
+import { GuildMember, SlashCommandBuilder, userMention, bold } from 'discord.js'
 
 import { getYouTubeSubscriberCount } from '../services/google.js'
 import { getTwitchFollowerCount } from '../services/twitch.js'
-import { DISCORD_CONTENT_CREATOR_ROLE_ID } from '../configuration.js'
+import {
+  DISCORD_BLOCK_CONTENT_CREATOR_ROLE_ID,
+  DISCORD_CONTENT_CREATOR_ROLE_ID
+} from '../configuration.js'
 import type { DiscordGetUserProfileResponse } from '../services/discord/DiscordClient.js'
 import { discordAPI } from '../services/discord/DiscordClient.js'
 import type { DiscordCommand } from '../services/discord/DiscordCommand.js'
+import { LOCALE } from '../utils/formatNumberOrdinals.js'
 
 const MINIMUM_CONTENT_CREATOR_ROLE = 500
 
 const medias = [
   { name: 'YouTube', value: 'youtube' },
   { name: 'Twitch', value: 'twitch' }
-]
+] as const
+
+type MediaName = typeof medias[number]['name']
 
 const mediasString = medias
   .map((media) => {
@@ -50,6 +56,16 @@ const contentCreatorRole: DiscordCommand = {
         )
         return
       }
+      if (
+        interaction.member.roles.cache.has(
+          DISCORD_BLOCK_CONTENT_CREATOR_ROLE_ID
+        )
+      ) {
+        await interaction.reply(
+          `You can't have the Content Creators role. Refer to a moderator for more information.`
+        )
+        return
+      }
       const media = interaction.options.get('media')
       const { data } = await discordAPI.get<DiscordGetUserProfileResponse>(
         `/users/${interaction.user.id}/profile`
@@ -65,20 +81,29 @@ const contentCreatorRole: DiscordCommand = {
         )
         return
       }
+      let mediaName: MediaName = 'YouTube'
+      let mediaURL = ''
       let fansCount = 0
       let fansType: 'subscribers' | 'followers' = 'subscribers'
       if (account.type === 'youtube') {
+        mediaName = 'YouTube'
+        mediaURL = `https://www.youtube.com/channel/${account.id}`
         fansCount = await getYouTubeSubscriberCount(account)
         fansType = 'subscribers'
       } else {
+        mediaName = 'Twitch'
+        mediaURL = `https://www.twitch.tv/${account.name}`
         fansCount = await getTwitchFollowerCount(account)
         fansType = 'followers'
       }
+      const fansCountString = `You currently have ${bold(
+        `${fansCount.toLocaleString(LOCALE)} ${fansType} on ${mediaName}`
+      )}`
       if (fansCount < MINIMUM_CONTENT_CREATOR_ROLE) {
         await interaction.reply(
           `${userMention(
             interaction.user.id
-          )} You need at least ${MINIMUM_CONTENT_CREATOR_ROLE} followers to use this command.\nYou currently have ${fansCount} ${fansType}, you can make it. :muscle:`
+          )} You need at least ${MINIMUM_CONTENT_CREATOR_ROLE} ${fansType} to use this command.\n${fansCountString}, you can make it. :muscle:\n${mediaURL}`
         )
         return
       }
@@ -86,7 +111,7 @@ const contentCreatorRole: DiscordCommand = {
       await interaction.reply(
         `${userMention(
           interaction.user.id
-        )} You have been given the Content Creators role. :tada:`
+        )} You have been given the Content Creators role. :tada:\n${fansCountString}.\n${mediaURL}`
       )
     } catch (error) {
       console.error(error)
