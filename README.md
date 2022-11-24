@@ -2,6 +2,12 @@
 
 The Survival Of The Fittest Bot for [ARK: The Survival Of The Fittest](https://discord.gg/playSOTF) Discord server.
 
+<h1 align="center">
+  <a href="https://discord.gg/playSOTF">
+    <img width="300" src="./public/SOTFLogo.png" alt="Survival Of The Fittest">
+  </a>
+</h1>
+
 [Discord Documentation](https://discord.com/developers/applications).
 
 [Discord.js Documentation](https://discord.js.org/) and [Discord.js Guide](https://discordjs.guide/).

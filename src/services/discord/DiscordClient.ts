@@ -5,12 +5,7 @@ import { Client, Collection, GatewayIntentBits, REST, Routes } from 'discord.js'
 
 import type { DiscordEvent } from './DiscordEvent.js'
 import type { DiscordCommand } from './DiscordCommand.js'
-import {
-  DISCORD_CLIENT_ID,
-  DISCORD_GUILD_ID,
-  DISCORD_TOKEN,
-  DISCORD_TOKEN_USER
-} from '../../configuration.js'
+import { DISCORD_CLIENT_ID, DISCORD_GUILD_ID, DISCORD_TOKEN, DISCORD_TOKEN_USER } from '../../configuration.js'
 
 const DISCORD_API_VERSION = '10'
 
@@ -22,9 +17,7 @@ export const discordAPI = axios.create({
   }
 })
 
-export const discordRest = new REST({ version: DISCORD_API_VERSION }).setToken(
-  DISCORD_TOKEN
-)
+export const discordRest = new REST({ version: DISCORD_API_VERSION }).setToken(DISCORD_TOKEN)
 
 export class DiscordClient extends Client {
   private static instance: DiscordClient | null = null
@@ -36,11 +29,7 @@ export class DiscordClient extends Client {
 
   private constructor() {
     super({
-      intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMembers,
-        GatewayIntentBits.MessageContent
-      ]
+      intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent]
     })
     this.token = DISCORD_TOKEN
   }
@@ -48,9 +37,7 @@ export class DiscordClient extends Client {
   private async saveCommands(): Promise<void> {
     const commandsFiles = await fs.promises.readdir(DiscordClient.COMMANDS_URL)
     for (const commandFile of commandsFiles) {
-      const { default: command } = await import(
-        new URL(`./${commandFile}`, DiscordClient.COMMANDS_URL).href
-      )
+      const { default: command } = await import(new URL(`./${commandFile}`, DiscordClient.COMMANDS_URL).href)
       this.commands.set(command.data.name, command)
     }
   }
@@ -66,9 +53,7 @@ export class DiscordClient extends Client {
   public async loadEvents(): Promise<void> {
     const eventsFiles = await fs.promises.readdir(DiscordClient.EVENTS_URL)
     for (const eventFile of eventsFiles) {
-      const { default: event } = (await import(
-        new URL(`./${eventFile}`, DiscordClient.EVENTS_URL).href
-      )) as { default: DiscordEvent }
+      const { default: event } = (await import(new URL(`./${eventFile}`, DiscordClient.EVENTS_URL).href)) as { default: DiscordEvent }
       if (event.once ?? false) {
         this.once(event.name, event.execute)
       } else {
@@ -78,14 +63,11 @@ export class DiscordClient extends Client {
   }
 
   public async registerCommands(): Promise<void> {
-    await discordRest.put(
-      Routes.applicationGuildCommands(DISCORD_CLIENT_ID, DISCORD_GUILD_ID),
-      {
-        body: this.commands.map((command) => {
-          return command.data
-        })
-      }
-    )
+    await discordRest.put(Routes.applicationGuildCommands(DISCORD_CLIENT_ID, DISCORD_GUILD_ID), {
+      body: this.commands.map((command) => {
+        return command.data
+      })
+    })
   }
 }
 

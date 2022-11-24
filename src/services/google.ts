@@ -8,9 +8,7 @@ export const youtube = youtubeAPI({
   auth: YOUTUBE_API_KEY
 })
 
-export const getYouTubeSubscriberCount = async (
-  account: ConnectedAccount
-): Promise<number> => {
+export const getYouTubeSubscriberCount = async (account: ConnectedAccount): Promise<number> => {
   const channels = await youtube.channels.list({
     part: ['statistics'],
     id: [account.id]

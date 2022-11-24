@@ -11,9 +11,7 @@ const ready: DiscordEvent<Events.ClientReady> = {
     }
     await discordClient.user.setUsername('The Survival Of The Fittest Bot')
     console.log(`Logged in as \`${discordClient.user.tag}\`!`)
-    console.log(
-      `Invite link: <https://discord.com/oauth2/authorize?client_id=${discordClient.user.id}&permissions=8&scope=bot>`
-    )
+    console.log(`Invite link: <https://discord.com/oauth2/authorize?client_id=${discordClient.user.id}&permissions=8&scope=bot>`)
   }
 }
 
