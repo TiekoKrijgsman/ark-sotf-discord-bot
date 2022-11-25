@@ -41,6 +41,7 @@ Commands should be executed in the ${channelMention(DISCORD_BOT_COMMANDS_CHANNEL
           {
             name: bold('Links'),
             value: `
+${bold('•')} [ARKCountdown Twitch](https://www.twitch.tv/arkcountdown)
 ${bold('•')} [TeamSOTF Twitter](https://twitter.com/TeamSOTF)
 ${bold('•')} [ARK2News Twitter](https://twitter.com/ARK2News)
 ${bold('•')} [ARK: The Survival Of The Fittest Steam page](https://store.steampowered.com/app/407530/ARK_Survival_Of_The_Fittest/)
@@ -83,4 +84,4 @@ The following documents are also strictly enforced:
     ]
   }
 })
-console.log('Successfully sent rules message in.')
+console.log('Successfully sent rules message.')

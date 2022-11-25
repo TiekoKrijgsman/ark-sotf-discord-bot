@@ -10,7 +10,6 @@ const interactionCreate: DiscordEvent<Events.InteractionCreate> = {
     if (interaction.isButton() && interaction.member instanceof GuildMember && interaction.customId === SURVIVOR_PRIMARY_BUTTON) {
       await interaction.member.roles.add(DISCORD_WELCOME_ROLE_ID)
       await interaction.update({
-        content: 'You are a survivor!',
         components: []
       })
       return
