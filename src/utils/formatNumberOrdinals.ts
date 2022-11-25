@@ -2,18 +2,17 @@ export const LOCALE = 'en-US' as const
 
 const pluralRules = new Intl.PluralRules(LOCALE, { type: 'ordinal' })
 
-const suffixes = new Map([
-  ['one', 'st'],
-  ['two', 'nd'],
-  ['few', 'rd'],
-  ['other', 'th']
-])
+const suffixes = {
+  zero: 'th',
+  one: 'st',
+  two: 'nd',
+  few: 'rd',
+  many: 'th',
+  other: 'th'
+} as const
 
 export const formatNumberOrdinals = (number: number): string => {
   const rule = pluralRules.select(number)
-  let suffix = suffixes.get(rule)
-  if (suffix == null) {
-    suffix = 'th'
-  }
+  const suffix = suffixes[rule]
   return `${number.toLocaleString(LOCALE)}${suffix}`
 }
