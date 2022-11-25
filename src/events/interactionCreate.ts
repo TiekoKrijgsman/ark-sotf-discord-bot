@@ -8,9 +8,17 @@ const interactionCreate: DiscordEvent<Events.InteractionCreate> = {
   name: Events.InteractionCreate,
   execute: async (interaction) => {
     if (interaction.isButton() && interaction.member instanceof GuildMember && interaction.customId === SURVIVOR_PRIMARY_BUTTON) {
+      if (interaction.member.roles.cache.has(DISCORD_WELCOME_ROLE_ID)) {
+        await interaction.reply({
+          content: 'You already have the Survivor role!',
+          ephemeral: true
+        })
+        return
+      }
       await interaction.member.roles.add(DISCORD_WELCOME_ROLE_ID)
-      await interaction.update({
-        components: []
+      await interaction.reply({
+        content: 'You have been given the Survivor role! :tada:',
+        ephemeral: true
       })
       return
     }
