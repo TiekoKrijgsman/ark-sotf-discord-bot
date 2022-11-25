@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 
 import axios from 'axios'
+import type { Invite, User } from 'discord.js'
 import { Client, Collection, GatewayIntentBits, REST, Routes } from 'discord.js'
 
 import type { DiscordEvent } from './DiscordEvent.js'
@@ -69,6 +70,45 @@ export class DiscordClient extends Client {
       })
     })
   }
+
+  /**
+   *
+   * @param invitations
+   * @returns
+   */
+  public async getUsersInvitations(invitations?: Collection<string, Invite>): Promise<UsersInvitations> {
+    if (invitations == null) {
+      throw new Error('Failed to fetch invitations')
+    }
+    const usersInvitations: UsersInvitations = new Map()
+    for (const invitation of invitations.values()) {
+      if (invitation.inviter == null) {
+        continue
+      }
+      const userInvitations = usersInvitations.get(invitation.inviter.id)
+      if (userInvitations == null) {
+        usersInvitations.set(invitation.inviter.id, {
+          invitationsCount: invitation.uses ?? 0,
+          inviter: invitation.inviter
+        })
+      } else {
+        userInvitations.invitationsCount += invitation.uses ?? 0
+      }
+    }
+    return usersInvitations
+  }
+}
+
+/**
+ * Key: User Id
+ *
+ * Value: Number of invitations
+ */
+export type UsersInvitations = Map<string, UserInvitations>
+
+export interface UserInvitations {
+  invitationsCount: number
+  inviter: User
 }
 
 export interface ConnectedAccount {
