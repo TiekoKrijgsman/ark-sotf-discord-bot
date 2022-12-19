@@ -54,11 +54,18 @@ export class DiscordClient extends Client {
   public async loadEvents(): Promise<void> {
     const eventsFiles = await fs.promises.readdir(DiscordClient.EVENTS_URL)
     for (const eventFile of eventsFiles) {
-      const { default: event } = (await import(new URL(`./${eventFile}`, DiscordClient.EVENTS_URL).href)) as { default: DiscordEvent }
+      const { default: event } = (await import(new URL(`./${eventFile}`, DiscordClient.EVENTS_URL).href)) as { default: DiscordEvent<any> }
+      const eventExecute = async (...parameters: unknown[]): Promise<void> => {
+        try {
+          await event.execute(...parameters)
+        } catch (error) {
+          console.error(error)
+        }
+      }
       if (event.once ?? false) {
-        this.once(event.name, event.execute)
+        this.once(event.name, eventExecute)
       } else {
-        this.on(event.name, event.execute)
+        this.on(event.name, eventExecute)
       }
     }
   }
