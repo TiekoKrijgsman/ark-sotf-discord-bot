@@ -31,6 +31,7 @@ const voiceStateUpdate: DiscordEvent<Events.VoiceStateUpdate> = {
         return
       }
       await channel.delete()
+      return
     }
 
     if (newState.channelId === DISCORD_VOICE_LOBBY_CHANNEL_ID && newState.member instanceof GuildMember) {
