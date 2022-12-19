@@ -12,11 +12,12 @@ import {
 } from '../configuration.js'
 import { discordRest } from '../services/discord/DiscordClient.js'
 
-const SOTF_LOGO_URL = 'https://i.imgur.com/Y5L5BsI.png'
+const SOTF_LOGO_URL = 'https://i.imgur.com/0MQfYFW.png'
 const DISCORD_RULES_IMAGE_URL = 'https://i.imgur.com/4UqeLih.jpg'
 
 await discordRest.post(Routes.channelMessages(DISCORD_RULES_CHANNEL_ID), {
   body: {
+    content: 'discord.gg/playSOTF',
     embeds: [
       new EmbedBuilder().setImage(SOTF_LOGO_URL),
       new EmbedBuilder()
@@ -44,7 +45,7 @@ Commands should be executed in the ${channelMention(DISCORD_BOT_COMMANDS_CHANNEL
 ${bold('•')} [ARKCountdown Twitch](https://www.twitch.tv/arkcountdown)
 ${bold('•')} [TeamSOTF Twitter](https://twitter.com/TeamSOTF)
 ${bold('•')} [ARK2News Twitter](https://twitter.com/ARK2News)
-${bold('•')} [ARK: The Survival Of The Fittest Steam page](https://store.steampowered.com/app/407530/ARK_Survival_Of_The_Fittest/)
+${bold('•')} [ARK: Survival Of The Fittest Steam page](https://store.steampowered.com/app/407530/ARK_Survival_Of_The_Fittest/)
             `
           }
         ),
