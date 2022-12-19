@@ -30,7 +30,7 @@ export class DiscordClient extends Client {
 
   private constructor() {
     super({
-      intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent]
+      intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildVoiceStates]
     })
     this.token = DISCORD_TOKEN
   }
