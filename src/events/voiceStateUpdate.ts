@@ -37,15 +37,15 @@ const voiceStateUpdate: DiscordEvent<Events.VoiceStateUpdate> = {
       const channel = await newState.guild.channels.create({
         name: `${newState.member.displayName}'s Channel`,
         type: ChannelType.GuildVoice,
-        parent: newState.channel?.parentId,
-        permissionOverwrites: [
-          {
-            id: newState.member.id,
-            allow: ['ManageChannels', 'MoveMembers']
-          }
-        ]
+        parent: newState.channel?.parentId
       })
       await newState.member?.voice.setChannel(channel.id)
+      await channel.permissionOverwrites.set([
+        {
+          id: newState.member.id,
+          allow: ['ManageChannels', 'MoveMembers']
+        }
+      ])
     }
   }
 }
