@@ -32,7 +32,6 @@ const voiceStateUpdate: DiscordEvent<Events.VoiceStateUpdate> = {
           allow: ['ManageChannels', 'MoveMembers']
         }
       ])
-      return
     }
 
     if (
@@ -42,7 +41,6 @@ const voiceStateUpdate: DiscordEvent<Events.VoiceStateUpdate> = {
       oldState.channel?.members.size === 0
     ) {
       await deleteVoiceChannel(oldState.channel)
-      return
     }
 
     if (
