@@ -1,7 +1,16 @@
+import type { VoiceChannel } from 'discord.js'
 import { ChannelType, Events, GuildMember } from 'discord.js'
 
-import { DISCORD_VOICE_LOBBY_CHANNEL_ID } from '../configuration.js'
+import { DISCORD_VOICE_LOBBY_CATEGORY_ID, DISCORD_VOICE_LOBBY_CHANNEL_ID } from '../configuration.js'
 import type { DiscordEvent } from '../services/discord/DiscordEvent.js'
+
+const deleteVoiceChannel = async (channel: VoiceChannel): Promise<void> => {
+  if (channel.deletable) {
+    try {
+      await channel.delete()
+    } catch {}
+  }
+}
 
 const voiceStateUpdate: DiscordEvent<Events.VoiceStateUpdate> = {
   name: Events.VoiceStateUpdate,
@@ -10,12 +19,38 @@ const voiceStateUpdate: DiscordEvent<Events.VoiceStateUpdate> = {
       return
     }
 
-    if (oldState.channelId !== DISCORD_VOICE_LOBBY_CHANNEL_ID && oldState?.channel?.type === ChannelType.GuildVoice && oldState.channel?.members.size === 0) {
-      await oldState.channel.delete()
+    if (newState.channelId === DISCORD_VOICE_LOBBY_CHANNEL_ID && newState.member instanceof GuildMember) {
+      const channel = await newState.guild.channels.create({
+        name: `${newState.member.displayName}'s Channel`,
+        type: ChannelType.GuildVoice,
+        parent: newState.channel?.parentId
+      })
+      await newState.member.voice.setChannel(channel.id)
+      await channel.permissionOverwrites.set([
+        {
+          id: newState.member.id,
+          allow: ['ManageChannels', 'MoveMembers']
+        }
+      ])
       return
     }
 
-    if (newState.channelId === null && oldState.channelId !== null && oldState.member instanceof GuildMember) {
+    if (
+      oldState.channelId !== DISCORD_VOICE_LOBBY_CHANNEL_ID &&
+      oldState.channel?.parentId === DISCORD_VOICE_LOBBY_CATEGORY_ID &&
+      oldState.channel?.type === ChannelType.GuildVoice &&
+      oldState.channel?.members.size === 0
+    ) {
+      await deleteVoiceChannel(oldState.channel)
+      return
+    }
+
+    if (
+      oldState.channelId !== DISCORD_VOICE_LOBBY_CHANNEL_ID &&
+      oldState.channel?.parentId === DISCORD_VOICE_LOBBY_CATEGORY_ID &&
+      oldState.channelId !== null &&
+      oldState.member instanceof GuildMember
+    ) {
       const channel = await newState.guild.channels.fetch(oldState.channelId)
       if (channel == null) {
         return
@@ -30,23 +65,7 @@ const voiceStateUpdate: DiscordEvent<Events.VoiceStateUpdate> = {
       if (!permissionOverwrites.allow.has('ManageChannels')) {
         return
       }
-      await channel.delete()
-      return
-    }
-
-    if (newState.channelId === DISCORD_VOICE_LOBBY_CHANNEL_ID && newState.member instanceof GuildMember) {
-      const channel = await newState.guild.channels.create({
-        name: `${newState.member.displayName}'s Channel`,
-        type: ChannelType.GuildVoice,
-        parent: newState.channel?.parentId
-      })
-      await newState.member?.voice.setChannel(channel.id)
-      await channel.permissionOverwrites.set([
-        {
-          id: newState.member.id,
-          allow: ['ManageChannels', 'MoveMembers']
-        }
-      ])
+      await deleteVoiceChannel(channel)
     }
   }
 }
