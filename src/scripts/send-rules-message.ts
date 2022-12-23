@@ -45,7 +45,7 @@ Commands should be executed in the ${channelMention(DISCORD_BOT_COMMANDS_CHANNEL
 ${bold('•')} The voice channels are ${bold('self-moderated')}.
 ${bold('•')} You can create your ${bold('own voice channel')} by joining the \`Lobby\` voice channel.
 You will be granted ownership of a new voice channel that you can rename and manage (only possible with 2FA enabled).
-${bold('•')} Voice channels will automatically be deleted if the owner leaves.
+${bold('•')} Voice channels will automatically be deleted if the channel is empty.
 `
           },
           {

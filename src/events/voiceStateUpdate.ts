@@ -42,29 +42,6 @@ const voiceStateUpdate: DiscordEvent<Events.VoiceStateUpdate> = {
     ) {
       await deleteVoiceChannel(oldState.channel)
     }
-
-    if (
-      oldState.channelId !== DISCORD_VOICE_LOBBY_CHANNEL_ID &&
-      oldState.channel?.parentId === DISCORD_VOICE_LOBBY_CATEGORY_ID &&
-      oldState.channelId !== null &&
-      oldState.member instanceof GuildMember
-    ) {
-      const channel = await newState.guild.channels.fetch(oldState.channelId)
-      if (channel == null) {
-        return
-      }
-      if (channel.type !== ChannelType.GuildVoice) {
-        return
-      }
-      const permissionOverwrites = channel.permissionOverwrites.cache.get(oldState.member.id)
-      if (permissionOverwrites == null) {
-        return
-      }
-      if (!permissionOverwrites.allow.has('ManageChannels')) {
-        return
-      }
-      await deleteVoiceChannel(channel)
-    }
   }
 }
 
