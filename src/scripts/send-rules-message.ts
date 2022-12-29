@@ -8,7 +8,8 @@ import {
   DISCORD_MODERATOR_ROLE_ID,
   DISCORD_RULES_CHANNEL_ID,
   DISCORD_SERVER_BOOSTER_ROLE_ID,
-  SURVIVOR_PRIMARY_BUTTON
+  SURVIVOR_BUTTON_ID,
+  TOURNAMENT_BUTTON_ID
 } from '../configuration.js'
 import { discordRest } from '../services/discord/DiscordClient.js'
 
@@ -90,7 +91,10 @@ The following documents are also strictly enforced:
         .setDescription(bold(':warning: To access the community discussion channels, after reading and agreeing to the rules, click on the button below to receive the Survivor role.'))
     ],
     components: [
-      new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId(SURVIVOR_PRIMARY_BUTTON).setEmoji('✅').setLabel('I am a survivor and accept the rules!').setStyle(ButtonStyle.Primary))
+      new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId(SURVIVOR_BUTTON_ID).setEmoji('✅').setLabel('I am a survivor and accept the rules!').setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId(TOURNAMENT_BUTTON_ID).setEmoji('<:dodowithit:1055076101728247829>').setLabel('I want to participate in tournaments!').setStyle(ButtonStyle.Secondary)
+      )
     ]
   }
 })
