@@ -24,7 +24,7 @@ The Survival Of The Fittest Bot for [ARK: The Survival Of The Fittest](https://d
 cp .env.example .env
 
 # Install
-npm install
+npm clean-install
 ```
 
 ## Usage
@@ -36,4 +36,11 @@ npm run discord:register-commands
 # Run Discord bot
 npm run build
 npm run start
+```
+
+## Usage with Docker
+
+```sh
+docker build --tag="ark-sotf-discord-bot" ./
+docker run --env-file=".env" --init --interactive --rm "ark-sotf-discord-bot"
 ```

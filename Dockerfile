@@ -1,20 +1,25 @@
-FROM node:18.12.1 AS dependencies
-WORKDIR /usr/src/app
+FROM node:18.12.1 AS builder-dependencies
+WORKDIR /usr/src/application
 COPY ./package*.json ./
-RUN npm install
+RUN npm clean-install
+
+FROM node:18.12.1 AS runner-dependencies
+WORKDIR /usr/src/application
+ENV NODE_ENV=production
+COPY ./package*.json ./
+RUN npm clean-install --omit=dev --ignore-scripts
 
 FROM node:18.12.1 AS builder
-WORKDIR /usr/src/app
-COPY --from=dependencies /usr/src/app/node_modules ./node_modules
+WORKDIR /usr/src/application
+COPY --from=builder-dependencies /usr/src/application/node_modules ./node_modules
 COPY ./ ./
 RUN npm run build
 
-FROM node:18.12.1 AS runner
-WORKDIR /usr/src/app
+FROM gcr.io/distroless/nodejs18-debian11:latest AS runner
+WORKDIR /usr/src/application
 ENV NODE_ENV=production
-COPY --from=builder /usr/src/app/node_modules ./node_modules
-COPY --from=builder /usr/src/app/package.json ./package.json
-COPY --from=builder /usr/src/app/build ./build
-COPY --from=builder /usr/src/app/public ./public
-USER node
-CMD ["node", "build/index.js"]
+COPY --from=runner-dependencies /usr/src/application/node_modules ./node_modules
+COPY --from=builder /usr/src/application/package.json ./package.json
+COPY --from=builder /usr/src/application/build ./build
+COPY --from=builder /usr/src/application/public ./public
+CMD ["./build/index.js"]
